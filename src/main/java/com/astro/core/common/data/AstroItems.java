@@ -19,6 +19,8 @@ public class AstroItems {
     public static ItemEntry<Item> UNFIRED_RUNE_TABLET = REGISTRATE.item("unfired_rune_tablet", Item::new)
             .lang("Unfired Rune Tablet")
             .register();
+    public static ItemEntry<Item> DATA_DISK = REGISTRATE.item("data_disk", Item::new).lang("Data Disk")
+            .register();
 
     public static void init() {}
 }

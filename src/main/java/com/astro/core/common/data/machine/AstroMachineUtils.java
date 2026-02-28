@@ -18,15 +18,6 @@ import static com.astro.core.common.registry.AstroRegistry.REGISTRATE;
 @SuppressWarnings("all")
 public class AstroMachineUtils {
 
-    /**
-     * Register a pair of steam machines (low pressure and high pressure)
-     * in the AstroCore namespace with proper datagen support.
-     *
-     * @param name    The base name for the machine (e.g., "steam_centrifuge")
-     * @param factory Factory function to create the machine instance
-     * @param builder Builder function to configure the machine
-     * @return Pair of low pressure and high pressure machine definitions
-     */
     public static Pair<MachineDefinition, MachineDefinition> registerSteamMachines(
                                                                                    String name,
                                                                                    BiFunction<IMachineBlockEntity, Boolean, MetaMachine> factory,
