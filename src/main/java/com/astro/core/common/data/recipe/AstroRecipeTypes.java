@@ -19,6 +19,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.DOWN_TO_UP;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 
+@SuppressWarnings("all")
 public class AstroRecipeTypes {
 
     public static GTRecipeType AETHER_ENGINE_RECIPES;
@@ -28,6 +29,7 @@ public class AstroRecipeTypes {
     public static GTRecipeType STEAM_BLAST_FURNACE_RECIPES;
     public static GTRecipeType FARADAY_GENERATOR_RECIPES;
     public static GTRecipeType KINETIC_COMBUSTION_RECIPES;
+    public static GTRecipeType CONCRETE_PLANT;
 
     public static void init() {
         AETHER_ENGINE_RECIPES = register("aether_engine", MULTIBLOCK)
@@ -104,5 +106,12 @@ public class AstroRecipeTypes {
                 .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW_MULTIPLE, LEFT_TO_RIGHT)
                 .setSound(GTSoundEntries.COMBUSTION)
                 .setEUIO(IO.OUT);
+
+        CONCRETE_PLANT = register("concrete_plant", MULTIBLOCK)
+                .setMaxIOSize( 6, 1, 2, 1 )
+                .setProgressBar(GuiTextures.PROGRESS_BAR_MIXER, LEFT_TO_RIGHT)
+                .setSound(GTSoundEntries.MIXER)
+                .setEUIO(IO.IN);
+
     }
 }

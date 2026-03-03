@@ -129,7 +129,7 @@ public class CWUGeneratorMachine extends MetaMachine implements ILocalCWUProvide
 
             FluidStack inTank = lubeTank.getFluidInTank(0);
             boolean hasLube = !inTank.isEmpty()
-                    && inTank.getFluid() == com.gregtechceu.gtceu.common.data.GTMaterials.Lubricant.getFluid()
+                    && inTank.isFluidEqual(new FluidStack(com.gregtechceu.gtceu.common.data.GTMaterials.Lubricant.getFluid(), 1))
                     && inTank.getAmount() >= lubePerCycle;
 
             if (hasEnergy && hasLube) {
@@ -179,7 +179,7 @@ public class CWUGeneratorMachine extends MetaMachine implements ILocalCWUProvide
                         boolean noEnergy = energyContainer.getEnergyStored() < euPerTick * 20L;
                         FluidStack tank = lubeTank.getFluidInTank(0);
                         boolean noLube = tank.isEmpty()
-                                || tank.getFluid() != com.gregtechceu.gtceu.common.data.GTMaterials.Lubricant.getFluid()
+                                || !tank.isFluidEqual(new FluidStack(com.gregtechceu.gtceu.common.data.GTMaterials.Lubricant.getFluid(), 1))
                                 || tank.getAmount() < lubePerCycle;
                         if (noEnergy && noLube)
                             return Component.translatable("astrogreg.machine.cwu_generator.inactive.no_power_lube").getString();

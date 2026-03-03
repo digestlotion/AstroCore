@@ -1,11 +1,14 @@
 package com.astro.core.common.machine.multiblock;
 
 import com.astro.core.common.machine.multiblock.kinetic.KineticCombustionEngineMachine;
+import com.astro.core.common.machine.multiblock.kinetic.KineticParallelMultiblockMachine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.property.GTMachineModelProperties;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -48,6 +51,8 @@ import static com.gregtechceu.gtceu.common.data.GCYMBlocks.CASING_INDUSTRIAL_STE
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.COKE_OVEN_HATCH;
 import static com.gregtechceu.gtceu.common.data.GTMachines.STEAM_HATCH;
+import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeModifiers.PARALLEL_HATCH;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.COKE_OVEN_RECIPES;
 import static com.gregtechceu.gtceu.common.data.models.GTMachineModels.createWorkableCasingMachineModel;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.formatNumbers;
@@ -339,12 +344,45 @@ public class AGEMultiMachines {
                     .andThen(b -> b.addDynamicRenderer(DynamicRenderHelper::makeRecipeFluidAreaRender)))
             .register();
 
+
+    public static final MultiblockMachineDefinition KINETIC_CONCRETE_PLANT = REGISTRATE
+            .multiblock("kinetic_concrete_plant", KineticParallelMultiblockMachine::new)
+            .langValue("Kinetic Concrete Plant")
+            .rotationState(RotationState.ALL)
+            .recipeType(AstroRecipeTypes.CONCRETE_PLANT)
+            .appearanceBlock(MACHINE_CASING_KINETIC)
+            .recipeModifier(KineticParallelMultiblockMachine::recipeModifier, true)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle(" XXX ", "XXXXX", "XXKXX", "XXXXX", " XXX ")
+                    .aisle(" XXX ", "X   X", "X P X", "X   X", " XXX ")
+                    .aisle(" XXX ", "X G X", "XGPGX", "X G X", " XXX ")
+                    .aisle(" XXX ", "X   X", "X P X", "X   X", " XXX ")
+                    .aisle(" XXX ", "XXXXX", "XXXXX", "XXXXX", " XXX ")
+                    .aisle(" XXX ", " X@X ", "  X  ", "     ", "     ")
+                    .where("@", controller(blocks(definition.get())))
+                    .where("K", abilities(AstroPartAbility.KINETIC_INPUT))
+                    .where("X", blocks(MACHINE_CASING_KINETIC.get()).setMinGlobalLimited(50)
+                            .or(abilities(IMPORT_FLUIDS).setMaxGlobalLimited(2).setPreviewCount(1))
+                            .or(abilities(IMPORT_ITEMS).setMaxGlobalLimited(2).setPreviewCount(1))
+                            .or(abilities(EXPORT_FLUIDS).setMaxGlobalLimited(2).setPreviewCount(1))
+                            .or(abilities(EXPORT_ITEMS)).setMaxGlobalLimited(2).setPreviewCount(1))
+                    .where("G", blocks(CASING_BRONZE_GEARBOX.get()))
+                    .where("P", blocks(CASING_BRONZE_PIPE.get()))
+                    .where("#", air())
+                    .where(" ", any())
+                    .build())
+            .tooltips(Component.translatable("astrogreg.machine.large_kinetic_machine_parallels.tooltip"),
+                    Component.translatable("astrogreg.machine.large_kinetic_machine_recipes.tooltip"))
+            .workableCasingModel(AstroCore.id("block/casings/machine_casing_kinetic"),
+                    AstroCore.id("block/multiblock/concrete_mixer"))
+            .register();
+
     public static final MultiblockMachineDefinition KINETIC_COMBUSTION_ENGINE = REGISTRATE
             .multiblock("kinetic_combustion_engine", KineticCombustionEngineMachine::new)
             .langValue("Kinetic Combustion Engine")
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(AstroRecipeTypes.KINETIC_COMBUSTION_RECIPES)
-            .recipeModifier(GTRecipeModifiers.BATCH_MODE)
+            .recipeModifier(BATCH_MODE)
             .appearanceBlock(CASING_TITANIUM_STABLE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XKX", "XXX")
@@ -363,9 +401,41 @@ public class AGEMultiMachines {
                     .build())
             .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_stable_titanium"),
                     GTCEu.id("block/multiblock/generator/large_combustion_engine"))
-//            .tooltips(Component.translatable("astrogreg.machine.kinetic_combustion_engine.tooltip"))
             .register();
-
+    
+    // Pre-Industrial Multiblocks
+    public static final MultiblockMachineDefinition CONCRETE_PLANT = REGISTRATE
+            .multiblock("concrete_plant", WorkableElectricMultiblockMachine::new)
+            .langValue("Concrete Plant")
+            .rotationState(RotationState.ALL)
+            .recipeType(AstroRecipeTypes.CONCRETE_PLANT)
+            .appearanceBlock(CASING_STEEL_SOLID)
+            .recipeModifiers(OC_NON_PERFECT_SUBTICK, PARALLEL_HATCH, BATCH_MODE)
+            .pattern(definition -> FactoryBlockPattern.start()
+                    .aisle(" XXX ", "XXXXX", "XXXXX", "XXXXX", " XXX ")
+                    .aisle(" XXX ", "X   X", "X P X", "X   X", " XXX ")
+                    .aisle(" XXX ", "X G X", "XGPGX", "X G X", " XXX ")
+                    .aisle(" XXX ", "X   X", "X P X", "X   X", " XXX ")
+                    .aisle(" XXX ", "XXXXX", "XXXXX", "XXXXX", " XXX ")
+                    .aisle(" XXX ", " X@X ", "  X  ", "     ", "     ")
+                    .where("@", controller(blocks(definition.get())))
+                    .where("X", blocks(CASING_STEEL_SOLID.get()).setMinGlobalLimited(50)
+                            .or(abilities(IMPORT_FLUIDS).setMaxGlobalLimited(4).setPreviewCount(1))
+                            .or(abilities(IMPORT_ITEMS).setMaxGlobalLimited(4).setPreviewCount(1))
+                            .or(abilities(EXPORT_FLUIDS).setMaxGlobalLimited(4).setPreviewCount(1))
+                            .or(abilities(EXPORT_ITEMS).setMaxGlobalLimited(4).setPreviewCount(1))
+                            .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(2))
+                            .or(abilities(MAINTENANCE).setExactLimit(1))
+                            .or(abilities(PartAbility.PARALLEL_HATCH).setMaxGlobalLimited(1).setPreviewCount(0)))
+                    .where("G", blocks(CASING_STEEL_GEARBOX.get()))
+                    .where("P", blocks(CASING_STEEL_PIPE.get()))
+                    .where("#", air())
+                    .where(" ", any())
+                    .build())
+            .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
+            .workableCasingModel(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
+                    AstroCore.id("block/multiblock/concrete_mixer"))
+            .register();
 
     // Industrial Processing Machines
     public static final MultiblockMachineDefinition INDUSTRIAL_AUTOCLAVE = REGISTRATE
@@ -373,7 +443,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Autoclave")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.AUTOCLAVE_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_STYRENE_BUTADIENE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -405,7 +475,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Material Press")
             .rotationState(RotationState.ALL)
             .recipeTypes(GTRecipeTypes.BENDER_RECIPES, GTRecipeTypes.FORGE_HAMMER_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_ULTIMET)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -437,7 +507,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Centrifugal Unit")
             .rotationState(RotationState.ALL)
             .recipeTypes(GTRecipeTypes.CENTRIFUGE_RECIPES, GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_RED_STEEL)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -469,7 +539,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Chemical Bath")
             .rotationState(RotationState.ALL)
             .recipeTypes(GTRecipeTypes.ORE_WASHER_RECIPES, GTRecipeTypes.CHEMICAL_BATH_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_POLYVINYL_CHLORIDE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -501,7 +571,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Electrolyzer")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.ELECTROLYZER_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_BLUE_STEEL)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -532,7 +602,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Extruder")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.EXTRUDER_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_BLACK_STEEL)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -563,7 +633,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Fluid Solidifier")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.FLUID_SOLIDFICATION_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_SILICONE_RUBBER)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -594,7 +664,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Lathe")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.LATHE_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_ROSE_GOLD)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -625,7 +695,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Macerator")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_CARBON_FIBER_MESH)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -656,7 +726,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Mixer")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.MIXER_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_VANADIUM_STEEL)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -687,7 +757,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Sifter")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.SIFTER_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_BISMUTH_BRONZE)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -718,7 +788,7 @@ public class AGEMultiMachines {
             .langValue("Industrial Wiremill")
             .rotationState(RotationState.ALL)
             .recipeType(GTRecipeTypes.WIREMILL_RECIPES)
-            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, GTRecipeModifiers.BATCH_MODE)
+            .recipeModifiers(ProcessingCoreMachine::processingCoreOverclock, BATCH_MODE)
             .appearanceBlock(MACHINE_CASING_COBALT_BRASS)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
