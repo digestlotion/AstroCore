@@ -20,6 +20,9 @@ public class AstroDataGenerators {
             event.getGenerator().addProvider(
                     true,
                     new SoundEntryBuilder.SoundEntryProvider(packOutput, AstroCore.MOD_ID));
+
         }
+
+        AstroOreWorldgenProvider.register(event);
     }
 }

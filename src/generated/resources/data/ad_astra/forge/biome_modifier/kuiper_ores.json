@@ -5,7 +5,7 @@
     "ad_astra:kuiper_copper_ore",
     "ad_astra:kuiper_iron_ore",
     "ad_astra:kuiper_redstone_ore",
-    "ad_astra:kuiper_nickel_ore",
+    "ad_astra:kuiper_garnierite_ore",
     "ad_astra:kuiper_silver_ore",
     "ad_astra:kuiper_sphalerite_ore",
     "ad_astra:kuiper_desh_ore",
@@ -13,7 +13,9 @@
     "ad_astra:kuiper_diamond_ore",
     "ad_astra:kuiper_emerald_ore",
     "ad_astra:kuiper_sapphire_ore",
-    "ad_astra:kuiper_ruby_ore"
+    "ad_astra:kuiper_ruby_ore",
+    "ad_astra:kuiper_nether_quartz_ore",
+    "ad_astra:kuiper_galena_ore"
   ],
   "step": "underground_ores"
 }

@@ -23,6 +23,11 @@ public class AstroItems {
         REGISTRATE.creativeModeTab(() -> ASTRO_CREATIVE_TAB);
     }
 
+    public static ItemEntry<AstroItem> KUIPER_SLIME_BALL = REGISTRATE
+            .item("kuiper_slime_ball", AstroItem::new)
+            .lang("Kuiper Slime Ball")
+            .register();
+
     public static ItemEntry<AstroItem> UNFIRED_RUNE_TABLET = REGISTRATE
             .item("unfired_rune_tablet", AstroItem::new)
             .lang("Unfired Rune Tablet")

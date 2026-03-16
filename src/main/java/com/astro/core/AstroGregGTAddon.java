@@ -1,5 +1,6 @@
 package com.astro.core;
 
+import com.astro.core.common.data.recipe.AstroTestRecipes;
 import com.gregtechceu.gtceu.api.addon.GTAddon;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -13,8 +14,8 @@ import com.astro.core.common.data.recipe.generated.AstroGeneratorRecipeHandler;
 import com.astro.core.common.data.recipe.run.AstroSleeveRecipeRunner;
 import com.astro.core.common.data.recipe.run.AstroWireRecipeRunner;
 import com.astro.core.common.data.tag.AstroTagPrefix;
-import com.astro.core.common.machine.crates.AstroCrateRecipes;
-import com.astro.core.common.machine.drums.AstroDrumRecipes;
+import com.astro.core.common.data.recipe.generated.AstroCrateRecipes;
+import com.astro.core.common.data.recipe.generated.AstroDrumRecipes;
 import com.astro.core.common.machine.part.AstroHatchesAndBuses;
 import com.astro.core.common.registry.AstroRegistry;
 
@@ -51,6 +52,7 @@ public class AstroGregGTAddon implements IGTAddon {
         AstroCrateRecipes.init(provider);
         AstroHatchesAndBuses.init(provider);
         AstroRecipes.init(provider);
+        AstroTestRecipes.init(provider);
         AstroGeneratorRecipeHandler.init(provider);
     }
 

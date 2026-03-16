@@ -6,7 +6,7 @@
     "targets": [
       {
         "state": {
-          "Name": "gtceu:asteroid_stone_nickel_ore"
+          "Name": "gtceu:asteroid_stone_garnierite_ore"
         },
         "target": {
           "block": "astrogreg:asteroid_stone",
@@ -15,7 +15,7 @@
       },
       {
         "state": {
-          "Name": "gtceu:hard_asteroid_stone_nickel_ore"
+          "Name": "gtceu:hard_asteroid_stone_garnierite_ore"
         },
         "target": {
           "block": "astrogreg:hard_asteroid_stone",

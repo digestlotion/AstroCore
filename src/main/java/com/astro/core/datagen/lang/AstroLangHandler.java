@@ -102,7 +102,7 @@ public class AstroLangHandler {
 
         provider.add("astrogreg.machine.large_kinetic_alternator.tooltip", "Converts §6Stress Units§r into EU/t");
         provider.add("astrogreg.machine.large_kinetic_alternator_production.tooltip",
-                "Costs 1024 SU at 32 RPM §7and produces§r 6 EU/t §7per§r Parallel Recipe");
+                "Costs 1024 SU §7at§r 32 RPM §7and produces§r 6 EU/t §7per§r Parallel Recipe");
         provider.add("astrogreg.machine.large_kinetic_alternator_max_production.tooltip",
                 "§aMax Output:§r 48 EU/t at 8 Parallels");
         provider.add("config.jade.plugin_astrogreg.kinetic_alternator_info", "Large Kinetic Alternator Info");

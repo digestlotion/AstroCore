@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("all")
 public class AstroOreWorldgenProvider implements DataProvider {
 
     private static final Gson GSON = new GsonBuilder()
@@ -31,17 +32,19 @@ public class AstroOreWorldgenProvider implements DataProvider {
                         .predicateBlock("astrogreg:asteroid_stone")
                         .predicateBlock("astrogreg:hard_asteroid_stone")
                         .ore("gtceu:copper", 8, 40)
-                        .ore("gtceu:iron", 6, 70)
+                        .ore("gtceu:iron", 6, 65)
                         .ore("gtceu:redstone", 9, 30)
-                        .ore("gtceu:nickel", 7, 20)
-                        .ore("gtceu:silver", 5, 20)
-                        .ore("gtceu:sphalerite", 5, 20)
+                        .ore("gtceu:garnierite", 7, 10)
+                        .ore("gtceu:silver", 5, 15)
+                        .ore("gtceu:sphalerite", 5, 25)
                         .ore("astrogreg:desh", 5, 40)
                         .ore("gtceu:gold", 7, 5)
                         .ore("gtceu:diamond", 6, 3)
-                        .ore("gtceu:emerald", 3, 2)
+                        .ore("gtceu:emerald", 4, 2)
                         .ore("gtceu:sapphire", 6, 10)
-                        .ore("gtceu:ruby", 5, 10));
+                        .ore("gtceu:ruby", 5, 10)
+                        .ore("gtceu:nether_quartz", 8, 25)
+                        .ore("gtceu:galena", 5, 20));
 
         event.getGenerator().addProvider(event.includeServer(), provider);
     }

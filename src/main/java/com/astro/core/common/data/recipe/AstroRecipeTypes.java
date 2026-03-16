@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,9 +22,12 @@ import net.minecraftforge.items.ItemStackHandler;
 import com.astro.core.client.AstroGUITextures;
 import com.astro.core.client.AstroSoundEntries;
 import com.astro.core.common.data.machine.conditions.PlanetaryResearchCondition;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.DOWN_TO_UP;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
@@ -129,14 +134,6 @@ public class AstroRecipeTypes {
                 .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
                 .setSound(GTSoundEntries.REPLICATOR);
 
-        ASTROPORT_RECIPES = register("astroport", ELECTRIC)
-                .setEUIO(IO.IN)
-                .setMaxIOSize(16, 1, 4, 0)
-                .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
-                .setSound(GTSoundEntries.ASSEMBLER)
-                .setHasResearchSlot(true)
-                .setUiBuilder(buildPlanetaryResearchSlot());
-
         OBSERVATORY_RECIPES = register("observatory", ELECTRIC)
                 .setMaxIOSize(2, 1, 0, 0)
                 .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
@@ -145,6 +142,33 @@ public class AstroRecipeTypes {
                 .setScanner(true)
                 .setMaxTooltips(4)
                 .setSound(GTSoundEntries.COMPUTATION);
+
+        ASTROPORT_RECIPES = register("astroport", ELECTRIC)
+                .setEUIO(IO.IN)
+                .setMaxIOSize(16, 1, 4, 0)
+                .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+                .setSound(GTSoundEntries.ASSEMBLER)
+                .setHasResearchSlot(true)
+                .setUiBuilder(buildPlanetaryResearchSlot())
+                .onRecipeBuild(AstroRecipeTypes::createObservatoryResearchRecipe);
+    }
+
+    private static void createObservatoryResearchRecipe(GTRecipeBuilder builder,
+                                                        Consumer<FinishedRecipe> provider) {
+        String planetId = builder.data.getString(PlanetaryResearchCondition.RECIPE_DATA_KEY);
+        if (planetId.isEmpty()) return;
+
+        ItemStack dataItem = ResearchManager.getDefaultResearchStationItem(16);
+        CompoundTag compound = dataItem.getOrCreateTag();
+        ResearchManager.writeResearchToNBT(compound, planetId, OBSERVATORY_RECIPES);
+
+        OBSERVATORY_RECIPES.recipeBuilder(planetId.replace(":", "_") + "_planetary_scan")
+                .inputItems(dataItem.getItem())
+                .outputItems(dataItem)
+                .CWUt(16)
+                .totalCWU(1200)
+                .EUt(VA[HV])
+                .save(provider);
     }
 
     private static BiConsumer<GTRecipe, WidgetGroup> buildPlanetaryResearchSlot() {

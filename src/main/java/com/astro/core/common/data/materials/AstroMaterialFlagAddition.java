@@ -20,6 +20,10 @@ public class AstroMaterialFlagAddition {
         Debris.setSeparatedInto(Gold);
 
         OreProperty Ostrum = OSTRUM.getProperty(PropertyKey.ORE);
-        Ostrum.setOreByProducts(Manganese, OSTRUM, Boron, Magnesium);
+        Ostrum.setOreByProducts(Manganese, CALORITE, Boron, Magnesium);
+        Ostrum.setSeparatedInto(DESH);
+
+//        OreProperty Calorite = CALORITE.getProperty(PropertyKey.ORE);
+//        Calorite.setOreByProducts(Nickel, CALORITE, CALORITE, Platinum);
     }
 }
