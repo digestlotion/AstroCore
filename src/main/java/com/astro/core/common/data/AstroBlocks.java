@@ -14,6 +14,7 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.client.model.generators.ModelFile;
 
 import com.astro.core.AstroCore;
+import com.astro.core.common.data.block.KuiperSlimeBlock;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
 import static com.astro.core.common.registry.AstroRegistry.REGISTRATE;
@@ -25,6 +26,7 @@ public class AstroBlocks {
 
     public static BlockEntry<Block> ASTEROID_STONE;
     public static BlockEntry<Block> HARD_ASTEROID_STONE;
+    public static BlockEntry<KuiperSlimeBlock> KUIPER_SLIME;
     public static BlockEntry<Block> LIVINGBRICKS;
     public static BlockEntry<Block> SHIMMERBRICKS;
 
@@ -47,8 +49,10 @@ public class AstroBlocks {
     public static BlockEntry<ActiveBlock> FIREBOX_ALFSTEEL;
 
     public static BlockEntry<Block> MACHINE_CASING_GAIASTEEL;
+    public static BlockEntry<Block> MACHINE_CASING_GAIASTEEL_BRICKS;
     public static BlockEntry<Block> GAIASTEEL_CASING_PIPE;
     public static BlockEntry<Block> GAIASTEEL_CASING_GEARBOX;
+    public static BlockEntry<ActiveBlock> FIREBOX_GAIASTEEL;
 
     public static BlockEntry<Block> STEEL_CONTROL_CASING;
     public static BlockEntry<Block> TUNGSTENSTEEL_CONTROL_CASING;
@@ -102,11 +106,24 @@ public class AstroBlocks {
 
     public static void init() {
         REGISTRATE.creativeModeTab(() -> AstroCore.ASTRO_CREATIVE_TAB);
-        // 1. Stones
+        // 1. Misc
         ASTEROID_STONE = createStone("asteroid_stone", "Asteroid Stone", "rocks/asteroid_stone",
                 MapColor.TERRACOTTA_PURPLE, 2.0F);
         HARD_ASTEROID_STONE = createStone("hard_asteroid_stone", "Hard Asteroid Stone", "rocks/hard_asteroid_stone",
                 MapColor.TERRACOTTA_PURPLE, 4.0F);
+
+        KUIPER_SLIME = REGISTRATE.block("kuiper_slime_block", KuiperSlimeBlock::new)
+                .initialProperties(() -> Blocks.SLIME_BLOCK)
+                .addLayer(() -> RenderType::translucent)
+                .blockstate((ctx, prov) -> prov.simpleBlock(ctx.get(),
+                        prov.models()
+                                .withExistingParent(ctx.getName(),
+                                        new ResourceLocation("minecraft", "block/slime_block"))
+                                .texture("particle", AstroCore.id("block/misc/kuiper_slime_block"))
+                                .texture("texture", AstroCore.id("block/misc/kuiper_slime_block"))))
+                .lang("Kuiper Slime Block")
+                .item(BlockItem::new).build().register();
+
         LIVINGBRICKS = createStone("livingbricks", "Livingbricks", "casings/livingbricks",
                 MapColor.TERRACOTTA_LIGHT_GRAY, 1.2F);
         SHIMMERBRICKS = createStone("shimmerbricks", "Shimmerbricks", "casings/shimmerbricks",
@@ -123,8 +140,10 @@ public class AstroBlocks {
                 "Solid §2Terrasteel§r Casing");
         ALFSTEEL_MACHINE_CASING = createCasing("machine_casing_alfsteel",
                 "generators/machine_casing_solid_alfsteel", "Solid §dAlfsteel§r Casing");
+        MACHINE_CASING_GAIASTEEL_BRICKS = createCasing("machine_casing_gaiasteel_bricks",
+                "casings/machine_casing_gaiasteel_bricks", "§cGaiasteel§r-Plated Brick Casing");
         MACHINE_CASING_GAIASTEEL = createCasing("machine_casing_gaiasteel",
-                "casings/machine_casing_gaiasteel", "§cGaiasteel§r-Plated Brick Casing");
+                "casings/machine_casing_gaiasteel", "Solid §cGaiasteel§r Casing");
         MACHINE_CASING_STYRENE_BUTADIENE = createCasing("industrial_styrene_butadiene_rubber_casing",
                 "casings/industrial_casings/machine_casing_styrene_butadiene_rubber",
                 "Industrial Styrene Butadiene Rubber Coated Casing");
@@ -166,7 +185,7 @@ public class AstroBlocks {
                 "casings/machine_casing_super_inert_pai", "Thermochemically Stable PAI Machine Casing");
         ALFSTEEL_GEARBOX_CASING = createCasing("alfsteel_gearbox_casing",
                 "generators/machine_casing_gearbox_alfsteel", "§dAlfsteel§r Gearbox Casing");
-        GAIASTEEL_CASING_GEARBOX = createCasing( "gaiasteel_gearbox_casing",
+        GAIASTEEL_CASING_GEARBOX = createCasing("gaiasteel_gearbox_casing",
                 "generators/machine_casing_gearbox_gaiasteel", "§cGaiasteel§r Gearbox Casing");
         GEARBOX_CASING_RHODIUM_PLATED_PALLADIUM = createCasing("gearbox_casing_rhodium_plated_palladium",
                 "casings/gearbox_casing_pristine_rhodium_plated_palladium", "Rhodium Plated Palladium Gearbox Casing");
@@ -179,7 +198,7 @@ public class AstroBlocks {
                 "Rhodium Plated Palladium Turbine Casing");
         TURBINE_CASING_NAQUADAH_ALLOY = createCasing("machine_casing_turbine_naquadah_alloy",
                 "generators/machine_casing_turbine_naquadah_alloy", "Naquadah Alloy Turbine Casing");
-//        _CASING = createCasing( "", "", "");
+        // _CASING = createCasing( "", "", "");
 
         // 3. Pipe Casings
         MANASTEEL_PIPE_CASING = createCasing("manasteel_pipe_casing",
@@ -188,7 +207,7 @@ public class AstroBlocks {
                 "generators/machine_casing_pipe_terrasteel", "§2Terrasteel§r Pipe Casing");
         ALFSTEEL_PIPE_CASING = createCasing("alfsteel_pipe_casing",
                 "generators/machine_casing_pipe_alfsteel", "§dAlfsteel§r Pipe Casing");
-        GAIASTEEL_CASING_PIPE = createCasing( "gaiasteel_pipe_casing",
+        GAIASTEEL_CASING_PIPE = createCasing("gaiasteel_pipe_casing",
                 "generators/machine_casing_pipe_gaiasteel", "§cGaiasteel§r Pipe Casing");
         PIPE_CASING_RHODIUM_PLATED_PALLADIUM = createCasing("pipe_casing_rhodium_plated_palladium",
                 "casings/pipe_casing_pristine_rhodium_plated_palladium", "Rhodium Plated Palladium Pipe Casing");
@@ -210,12 +229,16 @@ public class AstroBlocks {
                 AstroCore.id("block/generators/machine_casing_solid_alfsteel"),
                 AstroCore.id("block/generators/machine_casing_solid_alfsteel"),
                 AstroCore.id("block/generators/machine_casing_firebox_alfsteel")), "§dAlfsteel§r Firebox Casing");
+        FIREBOX_GAIASTEEL = createManaFirebox(new FireboxInfo("gaiasteel_firebox",
+                AstroCore.id("block/casings/machine_casing_gaiasteel"),
+                AstroCore.id("block/casings/machine_casing_gaiasteel"),
+                AstroCore.id("block/generators/machine_casing_firebox_gaiasteel")), "§cGaiasteel§r Firebox Casing");
 
         // 5. Control Casings
         STEEL_CONTROL_CASING = createCasing("steel_control_casing",
-                "casings/steel_control_casing", "Steel Control Casing");
+                "casings/steel_control_casing", "Basic Control Casing");
         TUNGSTENSTEEL_CONTROL_CASING = createCasing("tungstensteel_control_casing",
-                "casings/tungstensteel_control_casing", "Tungstensteel Control Casing");
+                "casings/tungstensteel_control_casing", "Advanced Control Casing");
 
         // 6. Functional Casings
         BRONZE_CRUSHING_WHEELS = createFunctionalCasing("bronze_crushing_wheels", "gcym/industrial_steam_casing",
@@ -434,4 +457,8 @@ public class AstroBlocks {
             AstroCore.id("block/generators/machine_casing_solid_alfsteel"),
             AstroCore.id("block/generators/machine_casing_solid_alfsteel"),
             AstroCore.id("block/generators/machine_casing_firebox_alfsteel"));
+    public static final FireboxInfo GAIASTEEL_FIREBOX_REC = new FireboxInfo("gaiasteel_firebox",
+            AstroCore.id("block/casings/machine_casing_gaiasteel"),
+            AstroCore.id("block/casings/machine_casing_gaiasteel"),
+            AstroCore.id("block/generators/machine_casing_firebox_gaiasteel"));
 }

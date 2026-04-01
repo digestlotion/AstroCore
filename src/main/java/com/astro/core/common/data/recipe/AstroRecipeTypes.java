@@ -2,32 +2,22 @@ package com.astro.core.common.data.recipe;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.SlotWidget;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.items.ItemStackHandler;
 
 import com.astro.core.client.AstroGUITextures;
 import com.astro.core.client.AstroSoundEntries;
-import com.astro.core.common.data.machine.conditions.PlanetaryResearchCondition;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.astro.core.common.data.AstroItems;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
-import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.astro.core.common.data.recipe.planetary_research.ObservatoryRecipeBuilder.buildPlanetaryResearchSlot;
+import static com.astro.core.common.data.recipe.planetary_research.ObservatoryRecipeBuilder.createObservatoryResearchRecipe;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.DOWN_TO_UP;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
@@ -46,6 +36,17 @@ public class AstroRecipeTypes {
     public static GTRecipeType INSCRIPTION;
     public static GTRecipeType ASTROPORT_RECIPES;
     public static GTRecipeType OBSERVATORY_RECIPES;
+
+    public static final String OBSERVATORY_SCAN_ITEM_KEY = "observatory_scan_item";
+    public static final String OBSERVATORY_CWUT_KEY = "observatory_cwut";
+    public static final String OBSERVATORY_TOTAL_CWU_KEY = "observatory_total_cwu";
+    public static final String OBSERVATORY_EUT_KEY = "observatory_eut";
+    public static final String OBSERVATORY_PLANET_NAME_KEY = "observatory_planet_name";
+    public static final String OBSERVATORY_PLANET_ITEM_KEY = "observatory_planet_item";
+    public static final String OBSERVATORY_RESEARCH_ITEM_KEY = "observatory_research_item";
+
+    // Valid values: "orb", "stick", "disk", "module"
+    public static final String OBSERVATORY_RESEARCH_ITEM_TYPE_KEY = "observatory_research_item_type";
 
     public static void init() {
         AETHER_ENGINE_RECIPES = register("aether_engine", ELECTRIC)
@@ -135,13 +136,23 @@ public class AstroRecipeTypes {
                 .setSound(GTSoundEntries.REPLICATOR);
 
         OBSERVATORY_RECIPES = register("observatory", ELECTRIC)
-                .setMaxIOSize(2, 1, 0, 0)
+                .setMaxIOSize(2, 2, 0, 0)
                 .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
                 .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
                 .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
                 .setScanner(true)
                 .setMaxTooltips(4)
-                .setSound(GTSoundEntries.COMPUTATION);
+                .setSound(GTSoundEntries.COMPUTATION)
+                .setIconSupplier(() -> {
+                    try {
+                        return BuiltInRegistries.ITEM
+                                .getOptional(ResourceLocation.fromNamespaceAndPath("gtceu", "lv_sensor"))
+                                .map(ItemStack::new)
+                                .orElse(new ItemStack(Items.PAPER));
+                    } catch (Exception e) {
+                        return new ItemStack(Items.PAPER);
+                    }
+                });
 
         ASTROPORT_RECIPES = register("astroport", MULTIBLOCK)
                 .setEUIO(IO.IN)
@@ -150,42 +161,28 @@ public class AstroRecipeTypes {
                 .setSound(GTSoundEntries.ASSEMBLER)
                 .setHasResearchSlot(true)
                 .setUiBuilder(buildPlanetaryResearchSlot())
-                .onRecipeBuild(AstroRecipeTypes::createObservatoryResearchRecipe);
+                .onRecipeBuild((builder, provider) -> {
+                    ResearchManager.createDefaultResearchRecipe(builder, provider);
+                    createObservatoryResearchRecipe(builder, provider);
+                })
+                .setIconSupplier(() -> {
+                    try {
+                        return BuiltInRegistries.ITEM
+                                .getOptional(ResourceLocation.fromNamespaceAndPath("ad_astra", "tier_1_rocket"))
+                                .map(ItemStack::new)
+                                .orElse(new ItemStack(Items.PAPER));
+                    } catch (Exception e) {
+                        return new ItemStack(Items.PAPER);
+                    }
+                });
     }
 
-    private static void createObservatoryResearchRecipe(GTRecipeBuilder builder,
-                                                        Consumer<FinishedRecipe> provider) {
-        String planetId = builder.data.getString(PlanetaryResearchCondition.RECIPE_DATA_KEY);
-        if (planetId.isEmpty()) return;
-
-        ItemStack dataItem = ResearchManager.getDefaultResearchStationItem(16);
-        CompoundTag compound = dataItem.getOrCreateTag();
-        ResearchManager.writeResearchToNBT(compound, planetId, OBSERVATORY_RECIPES);
-
-        OBSERVATORY_RECIPES.recipeBuilder(planetId.replace(":", "_") + "_planetary_scan")
-                .inputItems(dataItem.getItem())
-                .outputItems(dataItem)
-                .CWUt(16)
-                .totalCWU(1200)
-                .EUt(VA[HV])
-                .save(provider);
-    }
-
-    private static BiConsumer<GTRecipe, WidgetGroup> buildPlanetaryResearchSlot() {
-        return (recipe, group) -> {
-            String planetId = recipe.data.getString(PlanetaryResearchCondition.RECIPE_DATA_KEY);
-            if (planetId.isEmpty()) return;
-
-            ItemStackHandler phantom = new ItemStackHandler(1);
-            phantom.setStackInSlot(0, ResearchManager.getDefaultScannerItem());
-
-            SlotWidget planetarySlot = new SlotWidget(phantom, 0, 130, 22, false, false)
-                    .setBackgroundTexture(GuiTextures.DATA_ORB_OVERLAY)
-                    .setOnAddedTooltips((w, tooltips) -> tooltips.add(Component.translatable(
-                            "astrogreg.recipe.condition.planetary_research_slot.tooltip",
-                            planetId)));
-
-            group.addWidget(planetarySlot);
+    public static ItemStack getResearchItemForType(String type, int cwut) {
+        return switch (type) {
+            case "disk" -> AstroItems.DATA_DISK.asStack();
+            case "stick" -> GTItems.TOOL_DATA_STICK.asStack();
+            case "module" -> GTItems.TOOL_DATA_MODULE.asStack();
+            default -> ResearchManager.getDefaultResearchStationItem(cwut);
         };
     }
 }

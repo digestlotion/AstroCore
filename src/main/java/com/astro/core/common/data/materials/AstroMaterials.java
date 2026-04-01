@@ -39,6 +39,7 @@ public class AstroMaterials {
     public static Material UNKNOWN;
     public static Material NETHERITE;
     public static Material ANCIENT_DEBRIS;
+    public static Material GAIA_ICHOR;
     public static Material ANDESITE_ALLOY;
     public static Material DESH;
     public static Material CALORITE;
@@ -64,6 +65,7 @@ public class AstroMaterials {
     public static Material NITRO_FLUX;
     public static Material RADIANT_ZEPHYRON;
     public static Material THALASSIUM;
+    public static Material CARNOTITE;
     public static Material DEIONIZED_WATER;
     public static Material DIVINYLBENZENE;
     public static Material DIETHYLBENZENE;
@@ -121,6 +123,14 @@ public class AstroMaterials {
                 .flags(NO_ORE_SMELTING, NO_SMELTING)
                 .iconSet(ROUGH)
                 .ore()
+                .buildAndRegister();
+
+        GAIA_ICHOR = new Material.Builder(AstroCore.id(
+                "gaia_ichor"))
+                .langValue("Gaia Ichor")
+                .liquid(new FluidBuilder().customStill())
+                .element(AstroElements.GA)
+                .color(0xf2a5ee)
                 .buildAndRegister();
 
         // Create
@@ -478,6 +488,13 @@ public class AstroMaterials {
                 .blastTemp(10800, BlastProperty.GasTier.HIGHEST, 1966080, 2400)
                 .color(0x61524d).secondaryColor(0xfc6f03)
                 .iconSet(RADIOACTIVE)
+                .buildAndRegister();
+
+        CARNOTITE = new Material.Builder(
+                AstroCore.id("carnotite")).langValue("Carnotite")
+                .components(Potassium, 2, Uraninite, 2, Vanadium, 2, Oxygen, 8, Water, 3)
+                .ore().color(0xf2db80).secondaryColor(0x686e1e).iconSet(METALLIC)
+                .flags(NO_SMELTING, NO_ORE_SMELTING, DECOMPOSITION_BY_ELECTROLYZING)
                 .buildAndRegister();
 
         NETHERITE = new Material.Builder(

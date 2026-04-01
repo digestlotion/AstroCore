@@ -23,7 +23,13 @@ public class AstroMaterialFlagAddition {
         Ostrum.setOreByProducts(Manganese, CALORITE, Boron, Magnesium);
         Ostrum.setSeparatedInto(DESH);
 
-//        OreProperty Calorite = CALORITE.getProperty(PropertyKey.ORE);
-//        Calorite.setOreByProducts(Nickel, CALORITE, CALORITE, Platinum);
+        OreProperty Carnotite = CARNOTITE.getProperty(PropertyKey.ORE);
+        Carnotite.setOreByProducts(Vanadium, Copper, Silver, RareEarth);
+        Carnotite.setSeparatedInto(Vanadium);
+        Carnotite.setWashedIn(SodiumPersulfate);
+        Carnotite.setEmissive(true);
+
+        // OreProperty Calorite = CALORITE.getProperty(PropertyKey.ORE);
+        // Calorite.setOreByProducts(Nickel, CALORITE, CALORITE, Platinum);
     }
 }
