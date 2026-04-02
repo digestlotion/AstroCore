@@ -53,7 +53,6 @@ public class AstroPlanetaryRecipes {
                 .planetName("Pluto")  // this part tells the tooltip what name to display
                 .researchItemType("disk") // can choose disk, stick, orb, or module
                 .planetDisplayItem(new ResourceLocation("astrogreg", "pluto"))); // shows planet png
-
         builder.save(provider);
     }
 }

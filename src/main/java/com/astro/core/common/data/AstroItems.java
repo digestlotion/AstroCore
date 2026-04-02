@@ -111,6 +111,14 @@ public class AstroItems {
             .item("pluto", AstroItem::new)
             .lang("Pluto")
             .register();
+    public static ItemEntry<AstroItem> NEPTUNE = REGISTRATE
+            .item("neptune", AstroItem::new)
+            .lang("Neptune")
+            .register();
+    public static ItemEntry<AstroItem> URANUS = REGISTRATE
+            .item("uranus", AstroItem::new)
+            .lang("Uranus")
+            .register();
 
     public static class AstroItem extends Item {
 

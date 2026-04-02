@@ -323,7 +323,7 @@ public class AstroMaterials {
                 .blastTemp(1700, BlastProperty.GasTier.LOW, 400, 1200)
                 .flags(GENERATE_FRAME, GENERATE_DENSE, DISABLE_ALLOY_BLAST,
                         GENERATE_PLATE, GENERATE_ROD, MORTAR_GRINDABLE,
-                        DISABLE_ALLOY_PROPERTY)
+                        GENERATE_BOLT_SCREW, DISABLE_ALLOY_PROPERTY)
                 .color(0xebb7ea).secondaryColor(0x000000).iconSet(SHINY)
                 .components(StainlessSteel, 4, SKY_STONE, 1)
                 .formula("(Fe6CrMnNi)4✨")
