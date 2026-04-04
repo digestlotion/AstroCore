@@ -3,13 +3,13 @@ package com.astro.core.mixin;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.item.DataItemBehavior;
 import com.gregtechceu.gtceu.utils.ResearchManager;
-import com.astro.core.common.data.recipe.AstroRecipeTypes;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import com.astro.core.common.data.recipe.AstroRecipeTypes;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +34,10 @@ public class DataItemBehaviorMixin {
         String planetName = researchData.researchId();
         for (var recipe : recipes) {
             String name = recipe.data.getString(AstroRecipeTypes.OBSERVATORY_PLANET_NAME_KEY);
-            if (!name.isEmpty()) { planetName = name; break; }
+            if (!name.isEmpty()) {
+                planetName = name;
+                break;
+            }
         }
         if (!tooltipComponents.isEmpty()) tooltipComponents.remove(tooltipComponents.size() - 1);
         tooltipComponents.add(Component.translatable("astrogreg.item.planetary_data.entry", planetName));

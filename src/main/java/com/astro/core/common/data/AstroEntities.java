@@ -18,14 +18,14 @@ import com.astro.core.common.entity.KuiperSlimeEntity;
 @Mod.EventBusSubscriber(modid = AstroCore.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AstroEntities {
 
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES =
-            DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, AstroCore.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister
+            .create(ForgeRegistries.ENTITY_TYPES, AstroCore.MOD_ID);
 
-    public static final RegistryObject<EntityType<KuiperSlimeEntity>> KUIPER_SLIME =
-            ENTITY_TYPES.register("kuiper_slime",
-                    () -> EntityType.Builder.<KuiperSlimeEntity>of(KuiperSlimeEntity::new, MobCategory.MONSTER)
-                            .sized(2.04F, 2.04F)
-                            .build("kuiper_slime"));
+    public static final RegistryObject<EntityType<KuiperSlimeEntity>> KUIPER_SLIME = ENTITY_TYPES.register(
+            "kuiper_slime",
+            () -> EntityType.Builder.<KuiperSlimeEntity>of(KuiperSlimeEntity::new, MobCategory.MONSTER)
+                    .sized(2.04F, 2.04F)
+                    .build("kuiper_slime"));
 
     @SubscribeEvent
     public static void registerAttributes(EntityAttributeCreationEvent event) {
