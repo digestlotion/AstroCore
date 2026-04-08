@@ -17,7 +17,14 @@
     "water_fog_color": -13421773
   },
   "spawners": {
-    "monster": [],
+    "monster": [
+      {
+        "type": "astrogreg:kuiper_slime",
+        "weight": 100,
+        "minCount": 2,
+        "maxCount": 4
+      }
+    ],
     "creature": [],
     "ambient": [],
     "axolotls": [],
@@ -28,17 +35,5 @@
   },
   "spawn_costs": {},
   "carvers": {},
-  "features": [
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-  ]
+  "features": [[], [], [], [], [], [], [], [], [], [], []]
 }
